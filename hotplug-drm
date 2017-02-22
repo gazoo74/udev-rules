@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+# Copyright 2017 Gaël PORTAY <gael.portay@savoirfairelinux.com>
+#
+# Licensed under the MIT license.
+#
+
+# Not called by hotplug
+if [ -z "$DEVPATH" ]; then
+	# Trigger an uevent on card0
+	exec su root -c 'echo change >/sys/class/drm/card0/uevent'
+fi
+
+# Called by hotplug
+# Be safe, drop privileges
+su - nobody -s "${SHELL:-/bin/sh}"
+
+# Create a temporary directory to record status of each connectors
+tmpdir="/tmp/${0##*/}"
+mkdir -p "$tmpdir"
+
+# Check status of all connectors
+card="${DEVPATH##*/}"
+for dev in "/sys$DEVPATH/$card-"*; do
+	name="${dev##*/$card-}"
+	action="change"
+	status="$(cat "$dev/status")"
+
+	# New connector, set action to add
+	if [ ! -d "$tmpdir/$name" ]; then
+		action="add"
+		mkdir -p "$tmpdir/$name"
+	# Status unchanged, keep going
+	elif [ "$(cat "$tmpdir/$name/status")" = "$status" ]; then
+		continue
+	fi
+
+	# Save status
+	cp "$dev/status" "$tmpdir/$name"
+
+	# Trigger uevent
+	echo "$action" >"$dev/uevent"
+done

@@ -1,0 +1,84 @@
+#!/bin/bash
+#
+# Copyright 2017 Gaël PORTAY <gael.portay@savoirfairelinux.com>
+#
+# Licensed under the MIT license.
+#
+
+PREFIX="/usr"
+
+# Not called by hotplug
+if [ -z "$DEVPATH" ]; then
+	# Trigger uevent on card0
+	exec su root -c 'echo change >/sys/class/drm/card0/uevent'
+fi
+
+# Called by hotplug
+# Be safe, drop privileges
+# Needs bash for the tiny bash ini-parser below
+su - nobody -s "${SHELL:-/bin/bash}"
+
+# Tiny bash ini-parser
+ini_parser() {
+	local ifs="$IFS"
+
+	# Read file content into variable
+	ini="$(<"$1")"
+
+	# Convert from scalar to line-array
+	IFS="$'\n'"
+	ini=( ${ini} )
+
+	# Translate ini section into shell function
+	ini=( ${ini[*]/#[/:;\}$'\n'ini_} )
+	ini=( ${ini[*]/%]/\(\) \{} )
+
+	# Move first element to the end
+	ini[${#ini[*]} + 1]="${ini[0]}"
+	ini[0]=
+
+	# Evaluate translation
+	eval "${ini[*]}"
+
+	IFS=$ifs
+}
+
+# Load global configuration if any
+reference="LVDS1"
+position="left"
+for conf in $PREFIX/etc/${0##*/}.conf /etc/${0##*/}.conf; do
+	if [ -e "$conf" ]; then
+		ini_parser "$conf"
+		break
+	fi
+done
+
+# Extract connector name from devpath
+name="${DEVPATH##*/}"
+name="${name#card*-}"
+
+# Sanitized it to XRandR connector name
+# For instance: HDMI-A-1 -> HDMI1; DP-1 -> DP1...
+xname="$(echo "$name" | sed -e 's,-[A-Z],,' -e 's,-,,')"
+
+# Load connector configuration if any
+for ini in "ini_$name" "ini_$xname"; do
+	if declare -f "$ini"; then
+		"$ini"
+		break
+	fi >/dev/null
+done
+
+# Skip if it is the reference output
+if [ "$xname" = "$reference" ]; then
+	exit 0
+fi
+
+# Setup monitors using XRandR
+# See: https://wiki.archlinux.org/index.php/xrandr
+if xrandr | grep -q "$xname disconnected"; then
+	xrandr --output "$reference"  --auto --primary
+	xrandr --output "$xname" --off
+else
+	xrandr --output "$xname" --auto "--$position-of" "$reference"
+fi

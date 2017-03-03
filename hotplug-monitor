@@ -110,3 +110,12 @@ if xrandr | grep -q "$xname disconnected"; then
 else
 	xrandr --output "$xname" --auto "--$position-of" "$reference"
 fi
+
+# Callback extra scripts
+status="$(cat /sys$DEVPATH/status)"
+dir="$PREFIX/libexec/${0##*/}.d"
+if [ -d "$dir/" ] && \
+   ! run-parts --exit-on-error \
+               --arg "$status" --arg "$position" --arg "$name" "$dir"; then
+	echo "Warning: $dir: Halted!" >&2
+fi

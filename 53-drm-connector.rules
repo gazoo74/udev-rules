@@ -4,4 +4,4 @@
 # ACTION=change
 # DEVPATH=/devices/pci0000:00/0000:00:02.0/drm/card0/card0-HDMI-A-1
 # SUBSYSTEM=drm
-SUBSYSTEM=="drm", DEVPATH=="*/drm/card[0-9]*/card[0-9]*-*", RUN+="/usr/bin/hotplug-monitor"
+SUBSYSTEM=="drm", DEVPATH=="*/drm/card[0-9]/card[0-9]-*", RUN+="/usr/bin/hotplug-monitor"

@@ -4,11 +4,13 @@
 # Licensed under the MIT license.
 #
 
+CFLAGS	+= -std=c99 -Werror -Wall -Wextra
+
 PREFIX	?= /usr/local
 DPDEV	?= HDMI1
 
 .PHONY: all
-all:
+all: edidcat
 
 hotplug-monitor.conf:
 	( cd /sys/class/drm/card0/ && ls -1d card0-* ) | \
@@ -30,6 +32,7 @@ install:
 	    -e '/SUBSYSTEM=="drm"/s#$$#, ENV{XAUTHORITY}="$(XAUTHORITY)"#' \
 	    -i $(DESTDIR)/etc/udev/rules.d/53-drm-connector.rules
 	install -m 0755 -d $(DESTDIR)$(PREFIX)/bin/
+	install -m 0755 edidcat $(DESTDIR)$(PREFIX)/bin/
 	install -m 0755 hotplug-drm $(DESTDIR)$(PREFIX)/bin/
 	install -m 0755 hotplug-monitor $(DESTDIR)$(PREFIX)/bin/
 	sed -e 's,/usr,$(PREFIX),' \
@@ -64,4 +67,8 @@ tests:
 	xrandr --output "$(DPDEV)" --off && sleep 3
 	@echo "Simulate connection of $(DPDEV)..."
 	sudo $(MAKE) -f Makefile uevent-change
+
+.PHONY: clean
+clean:
+	rm -f edidcat
 

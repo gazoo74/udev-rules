@@ -26,7 +26,7 @@ ini_parser() {
 	ini="$(<"$1")"
 
 	# Convert from scalar to line-array
-	IFS="$'\n'"
+	IFS=$'\n'
 	ini=( ${ini} )
 
 	# Translate ini section into shell function
@@ -38,7 +38,8 @@ ini_parser() {
 	ini[0]=
 
 	# Evaluate translation
-	eval "${ini[*]}"
+	# shellcheck disable=SC2116
+	eval "$(echo "${ini[*]}")"
 
 	IFS=$ifs
 }

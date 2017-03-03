@@ -53,6 +53,11 @@ for conf in $PREFIX/etc/${0##*/}.conf /etc/${0##*/}.conf; do
 	fi
 done
 
+# Parse edid if any
+if [ -e "/sys$DEVPATH/edid" ]; then
+	eval "$(edidcat --prefix _ --export "/sys$DEVPATH/edid")"
+fi
+
 # Extract connector name from devpath
 name="${DEVPATH##*/}"
 name="${name#card*-}"
@@ -62,12 +67,35 @@ name="${name#card*-}"
 xname="$(echo "$name" | sed -e 's,-[A-Z],,' -e 's,-,,')"
 
 # Load connector configuration if any
-for ini in "ini_$name" "ini_$xname"; do
-	if declare -f "$ini"; then
-		"$ini"
-		break
-	fi >/dev/null
+for ini in "$name" "$xname"; do
+	# Setup suffixes from edidcat
+	#
+	# Example:
+	# _ID="LGD"
+	# _CODE=A303
+	# _SERIAL=0000
+	# _WEEK=0
+	# _YEAR=2012
+	# _EDID_VERSION=1
+	# _EDID_REVISION=3
+	# _TEXT="LG Display"
+	# _TEXT="LP125WH2-TLB2"
+	for suffix in "_${_ID}_${_CODE}_${_SERIAL}_${_WEEK}_${_YEAR}" \
+		      "_${_ID}_${_CODE}_${_SERIAL}_${_WEEK}" \
+		      "_${_ID}_${_CODE}_${_SERIAL}" \
+		      "_${_ID}_${_CODE}" \
+		      "_${_ID}" \
+		      ""; do
+		if declare -f "ini_$ini$suffix"; then
+			"ini_$ini$suffix"
+			break
+		fi >/dev/null
+	done
 done
+
+NAME="$name"
+XNAME="$xname"
+export NAME XNAME
 
 # Skip if it is the reference output
 if [ "$xname" = "$reference" ]; then

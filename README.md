@@ -44,7 +44,7 @@ very simple *ini* style configuration file. This file is located either under
 
 ## REQUIREMENT
 
-[hotplug-monitor](hotplug-monitor#L21-L44) needs *bash*. It uses _arrays_ to
+[hotplug-monitor](hotplug-monitor#L21-L45) needs *bash*. It uses _arrays_ to
 handle the conffile content line-by-line, and _replacement substitution_.
 
 ## BUGS

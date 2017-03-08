@@ -42,6 +42,10 @@ install:
 		install -m 0644 hotplug-monitor.conf $(DESTDIR)$(PREFIX)/etc/; \
 	fi
 
+.PHONY: check
+check:
+	shellcheck hotplug-drm hotplug-monitor
+
 .PHONY: reload
 reload:
 	udevadm control --reload-rules

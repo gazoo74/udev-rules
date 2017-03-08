@@ -7,8 +7,13 @@
 
 # Not called by hotplug
 if [ -z "$DEVPATH" ]; then
-	# Trigger an uevent on card0
-	exec su root -c 'echo change >/sys/class/drm/card0/uevent'
+	# Root does not need to su
+	if [ "$(id -u)" -eq 0 ]; then
+		su_root="sh"
+	fi
+
+	# Trigger uevent on card0
+	exec ${su_root:-su root} -c 'echo change >/sys/class/drm/card0/uevent'
 fi
 
 # Called by hotplug

@@ -22,7 +22,7 @@ shell scripts triggered by *udev(7)*.
 Because there is an *uevent* on card change but not on its connector, a script
 has to trigger it manually.
 
-The goal of [hotplug-drm](hotplug-drm#L27-L48) is to split the *drm uevent* on
+The goal of [hotplug-drm](hotplug-drm#L29-L50) is to split the *drm uevent* on
 card change into a *sub-uevent* on the card's connector. The script saves all
 connector's states under the */tmp/hotplug-monitor* to trigger a connector
 *uevent* only if its *status* has changed.
@@ -44,7 +44,7 @@ very simple *ini* style configuration file. This file is located either under
 
 ## REQUIREMENT
 
-[hotplug-monitor](hotplug-monitor#L26-L50) needs *bash*. It uses _arrays_ to
+[hotplug-monitor](hotplug-monitor#L28-L52) needs *bash*. It uses _arrays_ to
 handle the conffile content line-by-line, and _replacement substitution_.
 
 ## BUGS

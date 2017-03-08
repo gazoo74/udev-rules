@@ -5,6 +5,8 @@
 # Licensed under the MIT license.
 #
 
+set -e
+
 # Not called by hotplug
 if [ -z "$DEVPATH" ]; then
 	# Root does not need to su

@@ -5,6 +5,8 @@
 # Licensed under the MIT license.
 #
 
+set -e
+
 PREFIX="/usr"
 
 # Not called by hotplug

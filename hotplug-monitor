@@ -51,6 +51,20 @@ ini_parser() {
 	IFS=$ifs
 }
 
+# export dmi
+dmi() {
+	for file in product_name product_serial product_uuid product_version \
+	            sys_vendor; do
+		var="${file//-/_}"
+		var="__${var^^}"
+		val="$(cat "/sys/devices/virtual/dmi/id/$file")"
+		val="${val// /_}"
+		val="${val//(/\\(}"
+		val="${val//)/\\)}"
+		eval export "$var"="$val"
+	done
+}
+
 # Load global configuration if any
 reference="LVDS1"
 position="left"
@@ -59,6 +73,24 @@ for conf in $PREFIX/etc/${0##*/}.conf /etc/${0##*/}.conf; do
 		ini_parser "$conf"
 		break
 	fi
+done
+
+# Load machine preferences if any
+# __PRODUCT_UUID="EFB03401-5298-11CB-816D-AD9D95ED2A67"
+# __PRODUCT_SERIAL="PK1KYNR"
+# __PRODUCT_NAME="2306CTO"
+# __PRODUCT_VERSION="ThinkPad_X230"
+# __SYS_VENDOR="LENOVO"
+for section in "${__PRODUCT_UUID}" \
+	       "${__PRODUCT_SERIAL}" \
+	       "${__SYS_VENDOR}_${__PRODUCT_NAME}" \
+	       "${__SYS_VENDOR}_${__PRODUCT_VERSION}" \
+	       "${__SYS_VENDOR}" \
+	       "default"; do
+	if declare -f "ini_$section"; then
+		"ini_$section"
+		break
+	fi >/dev/null
 done
 
 # Parse edid if any

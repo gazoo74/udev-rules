@@ -66,7 +66,7 @@ dmi() {
 # Load global configuration if any
 reference="LVDS1"
 position="left"
-for conf in $PREFIX/etc/${0##*/}.conf /etc/${0##*/}.conf; do
+for conf in $PWD/${0##*/}.conf $PREFIX/etc/${0##*/}.conf /etc/${0##*/}.conf; do
 	if [ -e "$conf" ]; then
 		ini_parser "$conf"
 		break

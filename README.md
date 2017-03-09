@@ -16,7 +16,7 @@ connectors uevents
 
 ## DESCRIPTION
 
-[hotplug-drm](hotplug-drm) and [hotplug-monitor](hotplug-monitors) are both
+[hotplug-drm](hotplug-drm) and [hotplug-monitor](hotplug-monitor) are both
 shell scripts triggered by *udev(7)*.
 
 Because there is an *uevent* on card change but not on its connector, a script

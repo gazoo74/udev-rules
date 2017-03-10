@@ -105,30 +105,59 @@ name="${name#card*-}"
 xname="$(echo "$name" | sed -e 's,-[A-Z],,' -e 's,-,,')"
 
 # Load connector preferences if any
-for ini in "$name" "$xname"; do
-	# Setup suffixes from edidcat
-	#
-	# Example:
-	# _ID="LGD"
-	# _CODE=A303
-	# _SERIAL=0000
-	# _WEEK=0
-	# _YEAR=2012
-	# _EDID_VERSION=1
-	# _EDID_REVISION=3
-	# _TEXT="LG Display"
-	# _TEXT="LP125WH2-TLB2"
-	for suffix in "_${_ID}_${_CODE}_${_SERIAL}_${_WEEK}_${_YEAR}" \
-		      "_${_ID}_${_CODE}_${_SERIAL}_${_WEEK}" \
-		      "_${_ID}_${_CODE}_${_SERIAL}" \
-		      "_${_ID}_${_CODE}" \
-		      "_${_ID}" \
-		      ""; do
-		if declare -f "ini_$ini$suffix"; then
-			"ini_$ini$suffix"
-			break
+#
+# Example:
+# _ID="LGD"
+# _CODE=A303
+# _SERIAL=0000
+# _WEEK=0
+# _YEAR=2012
+# _EDID_VERSION=1
+# _EDID_REVISION=3
+# _TEXT="LG Display"
+# _TEXT="LP125WH2-TLB2"
+set -- "${_ID}_${_CODE}_${_SERIAL}_${_WEEK}_${_YEAR}" \
+       "${_ID}_${_CODE}_${_SERIAL}_${_WEEK}" \
+       "${_ID}_${_CODE}_${_SERIAL}" \
+       "${_ID}_${_CODE}" \
+       "${_ID}"
+
+# shellcheck disable=SC2153
+for arg in "${_NAME}" "${_TEXT}"; do
+	if [ -z "$arg" ]; then
+		continue
+	fi
+
+	set -- "$arg" "$@"
+done
+
+for monitor in "$@"; do
+	for connector in "$name" "$xname" ""; do
+		section="$monitor"
+		if [ -z "$section" ]; then
+			section="$connector"
+		elif [ -n "$connector" ]; then
+			section+=" $connector"
+		fi
+
+
+		# Sanitize spaces
+		func="ini_${section// /_}"
+		if ! declare -f "$func"; then
+			unset section
+			continue
 		fi >/dev/null
+
+		"$func"
+		break
 	done
+
+	if [ -z "$section" ]; then
+		export section monitor connector
+		continue
+	fi
+
+	break
 done
 
 NAME="$name"

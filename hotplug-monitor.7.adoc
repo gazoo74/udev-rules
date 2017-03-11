@@ -1,0 +1,50 @@
+= hotplug-monitor(7)
+:doctype: manpage
+:author: Gaël PORTAY
+:email: gael.portay@savoirfairelinux.com
+:lang: en
+:man manual: hotplug-monitor Manual
+:man source: udev-rules
+
+== NAME
+
+hotplug-monitor - setups monitor upon card's connector uevent
+
+== SYNOPSIS
+
+*hotplug-monitor*
+
+== DESCRIPTION
+
+*hotplug-monitor(7)* is triggered by the _connector sub-uevent_ which is
+triggered by *hotplug-drm(7)*.
+
+It setups the monitors layout using *xrandr(1)* according to a very simple ini
+style configuration file *hotplug-monitor.conf(5)*.
+
+This file is located either under _/usr/etc/hotplug-monitor.conf_ or
+_/etc/hotplug-monitor.conf_.
+
+== FILES
+
+/usr/etc/hotplug-monitor.conf::
+	Configuration file for *hotplug-monitor(7)*.
+
+== BUGS
+
+Report bugs at *https://github.com/gazoo74/udev-rules/issues*
+
+== AUTHOR
+
+Written by Gaël PORTAY *gael.portay@savoirfairelinux.com*
+
+== COPYRIGHT
+
+Copyright (c) 2017 Gaël PORTAY
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the MIT License.
+
+== SEE ALSO
+
+hotplug-monitor.conf(5), udev(7), xrandr(1), edidcat(1)

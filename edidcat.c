@@ -271,11 +271,11 @@ static inline const char *applet(const char *arg0)
 
 void usage(FILE * f, char * const arg0)
 {
-	fprintf(f, "Usage: %s [OPTIONS] [EDID] [EDID...]\n\n"
+	fprintf(f, "Usage: %s [OPTIONS] [EDID...]\n\n"
 		   "Concatenate EDID(s) to standard output.\n\n"
 		   "With no EDID, or when EDID is -, read standard input.\n\n"
 		   "Options:\n"
-		   " -p or --prefix STRING  Prefix variables.\n"
+		   " -p or --prefix STRING  Prefix variables with STRING.\n"
 		   " -e or --export         Set export.\n"
 		   " -D or --debug          Turn on debug messages.\n"
 		   " -V or --version        Display the version.\n"

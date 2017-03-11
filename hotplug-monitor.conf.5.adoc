@@ -1,0 +1,175 @@
+= hotplug-monitor.conf(5)
+:doctype: manpage
+:author: Gaël PORTAY
+:email: gael.portay@savoirfairelinux.com
+:lang: en
+:man manual: hotplug-monitor Manual
+:man source: udev-rules
+
+== NAME
+
+hotplug-monitor.conf - monitor preferences
+
+== DESCRIPTION
+
+The *hotplug-monitor.conf(5)* file is an ini-style file that defines the
+*hotplug-monitor(7)* preferences.
+
+*hotplug-monitor(7)* works fine without a configuration file.
+
+By default, it sets the new plugged monitor on _left_ of the reference monitor
+which is _LVDS1_ by default on laptops.
+
+Each sections override the default settings. A section overrides either the
+_machine_ or _connectors_ or _monitors_ preferences.
+
+The _default_ section overrides the script default preferences. This setup is
+preferred if no _machine_ preferences is found.
+
+This section defines::
+	- the _reference_ monitor: the one which serves as reference for
+	positioning the monitor (i.e. the main screen)
+	- the _position_ of the monitor relative to the reference: _left_ or
+	_right_.
+
+	[default]
+	reference=LVDS1
+	position=right
+
+=== MACHINE
+
+Machine preferences can be identified in 5 ways.
+
+First match section is applied, following the order below.
+
+- Either using its *UUID* (/sys/devices/virtual/dmi/id/product_uuid)
+
+	[EFB03401-5298-11CB-816D-AD9D95ED2A67]
+	reference=LVDS1
+	position=right
+
+- Or using its *serial* (/sys/devices/virtual/dmi/id/product_serial)
+
+	[PK1KYNR]
+	reference=LVDS1
+	position=right
+
+- Or using the *vendor* and the *product name*
+(/sys/devices/virtual/dmi/id/product_name)
+
+	[LENOVO_2306CTO]
+	reference=LVDS1
+	position=right
+
+- Or using the *vendor* and the *product version*
+(/sys/devices/virtual/dmi/id/product_version)
+
+	[LENOVO_ThinkPad_X230]
+	reference=LVDS-1
+	position=right
+
+- Or using the *vendor* only (/sys/devices/virtual/dmi/id/sys_vendor)
+
+	[LENOVO]
+	reference=LVDS1
+	position=right
+
+=== CONNECTOR
+
+The following section defines a per _connector_ settings.
+
+	[DP-1]
+	reference=LVDS1
+	position=right
+
+	[DP-2]
+	reference=LVDS1
+	position=right
+
+	[DP-3]
+	reference=LVDS1
+	position=right
+
+	[HDMI-A-1]
+	reference=LVDS1
+	position=right
+
+	[HDMI-A-2]
+	reference=LVDS1
+	position=right
+
+	[HDMI-A-3]
+	reference=LVDS1
+	position=right
+
+	# Set reference monitor is a non-sense.
+	# [LVDS1]
+	# reference=LVDS1
+	# position=right
+
+	[VGA-1]
+	reference=LVDS1
+	position=right
+
+=== MONITOR
+
+The following section defines a per _monitor_ settings using monitor *EDID*
+data. *EDID* data are extracted using *edidcat(1)*.
+
+	$ edidcat /sys/class/drm/card0/card0-DP-2/edid
+
+First match section is applied, following the order below.
+
+- Either using its *TEXT* data
+
+	[LG Display]
+	reference=LVDS1
+	position=right
+
+- Or using its *NAME* data
+
+	[LP125WH2-TLB2]
+	reference=LVDS1
+	position=right
+
+- Or using a combination of *ID*, *CODE*, *SERIAL*, *WEEK* and *YEAR* data. Each
+data is separated by an underscore.
+
+	[LGD_A303_0000_0_2012]
+	reference=LVDS1
+	position=right
+
+	[LGD_A303_0000_0]
+	reference=LVDS1
+	position=right
+
+	[LGD_A303_0000]
+	reference=LVDS1
+	position=right
+
+	[LGD_A303]
+	reference=LVDS1
+	position=right
+
+	[LGD]
+	reference=LVDS1
+	position=right
+
+== BUGS
+
+Report bugs at *https://github.com/gazoo74/udev-rules/issues*
+
+== AUTHOR
+
+Written by Gaël PORTAY *gael.portay@savoirfairelinux.com*
+
+== COPYRIGHT
+
+Copyright (c) 2017 Gaël PORTAY
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the MIT License.
+
+== SEE ALSO
+
+hotplug-monitor(7), udev(7), xrandr(1), edidcat(1)

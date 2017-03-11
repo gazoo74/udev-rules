@@ -10,7 +10,10 @@ PREFIX	?= /usr/local
 DPDEV	?= HDMI1
 
 .PHONY: all
-all: edidcat
+all: edidcat doc
+
+doc: edidcat.1.gz hotplug-drm.7.gz hotplug-monitor.7.gz \
+     hotplug-monitor.conf.5.gz
 
 hotplug-monitor.conf:
 	( cd /sys/class/drm/card0/ && ls -1d card0-* ) | \
@@ -38,6 +41,15 @@ install:
 	sed -e 's,/usr,$(PREFIX),' \
 	    -i $(DESTDIR)$(PREFIX)/bin/hotplug-monitor
 	install -m 0755 -d $(DESTDIR)$(PREFIX)/libexec/hotplug-monitor.d/
+	install -d $(DESTDIR)$(PREFIX)/share/man/man1/
+	install -m 644 edidcat.1.gz \
+	           $(DESTDIR)$(PREFIX)/share/man/man1/
+	install -d $(DESTDIR)$(PREFIX)/share/man/man5/
+	install -m 644 hotplug-monitor.conf.5.gz \
+	           $(DESTDIR)$(PREFIX)/share/man/man5/
+	install -d $(DESTDIR)$(PREFIX)/share/man/man7/
+	install -m 644 hotplug-drm.7.gz hotplug-monitor.7.gz \
+	           $(DESTDIR)$(PREFIX)/share/man/man7/
 	if [ -e "hotplug-monitor.conf.sample" ]; then \
 		install -m 0755 -d $(DESTDIR)$(PREFIX)/share/hotplug-monitor/; \
 		install -m 0644 hotplug-monitor.conf.sample \
@@ -180,5 +192,18 @@ tests:
 
 .PHONY: clean
 clean:
-	rm -f edidcat
+	rm -f edidcat edidcat.1.gz hotplug-drm.7.gz hotplug-monitor.7.gz \
+	      hotplug-monitor.conf.5.gz
+
+%.1: %.1.adoc
+	asciidoctor -b manpage -o $@ $<
+
+%.5: %.5.adoc
+	asciidoctor -b manpage -o $@ $<
+
+%.7: %.7.adoc
+	asciidoctor -b manpage -o $@ $<
+
+%.gz: %
+	gzip -c $^ >$@
 

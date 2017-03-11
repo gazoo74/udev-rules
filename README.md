@@ -8,11 +8,11 @@ Scripts are *device-manager* agnostics. They can be used by the *busybox(1)*
 
 ## NAME
 
-[hotplug-drm](hotplug-drm) - split drm [uevent](52-drm.rules#L15) into card's
-connectors uevents
+[hotplug-drm(7)](hotplug-drm.7.adoc) - splits drm [uevent](52-drm.rules#L15)
+into card's connectors uevents
 
-[hotplug-monitor](hotplug-monitor) - setups monitor upon card's connector
-[uevent](53-drm-connector.rules#L7)
+[hotplug-monitor(7)](hotplug-monitor.7.adoc) - setups monitor upon card's
+connector [uevent](53-drm-connector.rules#L7)
 
 ## DESCRIPTION
 
@@ -24,7 +24,7 @@ has to trigger it manually.
 
 The goal of [hotplug-drm](hotplug-drm#L29-L50) is to split the *drm uevent* on
 card change into a *sub-uevent* on the card's connector. The script saves all
-connector's states under the */tmp/hotplug-monitor* to trigger a connector
+connector's states under the */tmp/hotplug-drm* directory to trigger a connector
 *uevent* only if its *status* has changed.
 
 [hotplug-monitor](hotplug-monitor) is triggered by the *connector sub-uevent*
@@ -36,11 +36,10 @@ very simple *ini* style configuration file. This file is located either under
 ## FILES
 
 [/usr/etc/hotplug-monitor.conf](hotplug-monitor.conf.sample)
-	Configuration file for *hotplug-monitor(7)*.
+	Configuration file for [hotplug-monitor(7)](hotplug-monitor.conf.5.adoc).
 
-/tmp/hotplug-monitor
-	Temporary directory used by *hotplug-monitor(7)* to save connectors
-	states.
+/tmp/hotplug-drm
+	Temporary directory used by *hotplug-drm(7)* to save connectors states.
 
 ## REQUIREMENT
 

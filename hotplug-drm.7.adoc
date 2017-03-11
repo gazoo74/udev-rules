@@ -1,0 +1,48 @@
+= hotplug-drm(7)
+:doctype: manpage
+:author: Gaël PORTAY
+:email: gael.portay@savoirfairelinux.com
+:lang: en
+:man manual: hotplug-drm Manual
+:man source: udev-rules
+
+== NAME
+
+hotplug-drm - splits drm uevent into card's connectors uevents
+
+== SYNOPSIS
+
+*hotplug-drm*
+
+== DESCRIPTION
+
+*hotplug-drm(7)* splits the _drm uevent_ on card change into a _sub-uevent_ on
+the card's connector.
+
+The script saves all connector's states under the _/tmp/hotplug-drm_ directory
+to trigger a connector _uevent_ only if its _status_ has changed.
+
+== FILES
+
+/tmp/hotplug-drm::
+	Temporary directory used by *hotplug-drm(7)* to save connectors
+	states.
+
+== BUGS
+
+Report bugs at *https://github.com/gazoo74/udev-rules/issues*
+
+== AUTHOR
+
+Written by Gaël PORTAY *gael.portay@savoirfairelinux.com*
+
+== COPYRIGHT
+
+Copyright (c) 2017 Gaël PORTAY
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the MIT License.
+
+== SEE ALSO
+
+udev(7)

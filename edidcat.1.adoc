@@ -1,0 +1,53 @@
+= edidcat(1)
+:doctype: manpage
+:author: Gaël PORTAY
+:email: gael.portay@savoirfairelinux.com
+:lang: en
+:man manual: edidcat Manual
+:man source: udev-rules
+
+== NAME
+
+edidcat - concatenate EDID(s) to standard output
+
+== SYNOPSIS
+
+*edidcat* [OPTIONS] [EDID...]
+
+== DESCRIPTION
+
+Concatenate EDID(s) to standard output.
+
+With no EDID, or when EDID is -, read standard input.
+
+== OPTIONS
+
+**-p or --prefix STRING**::
+	Prefix variables with STRING.
+
+**-e or --export**::
+	Set export.
+
+**-D or --debug**::
+	Turn on debug messages.
+
+**-V or --version**::
+	Display the version.
+
+**-h or --help**::
+	Print usage.
+
+== BUGS
+
+Report bugs at *https://github.com/gazoo74/udev-rules/issues*
+
+== AUTHOR
+
+Written by Gaël PORTAY *gael.portay@savoirfairelinux.com*
+
+== COPYRIGHT
+
+Copyright (c) 2017 Gaël PORTAY
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the MIT License.

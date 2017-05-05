@@ -4,6 +4,9 @@
 #
 # Licensed under the MIT license.
 #
+# Setup monitors using XRandR
+# See: https://wiki.archlinux.org/index.php/xrandr
+#
 
 set -e
 
@@ -24,6 +27,41 @@ fi
 # Be safe, drop privileges
 # Needs bash for the tiny bash ini-parser below
 su - nobody -s "${SHELL:-/bin/bash}"
+
+# Run extra scripts
+run_parts() {
+	local status dir="$PREFIX/libexec/${0##*/}.d"
+	status="$(cat "/sys$DEVPATH/status")"
+	if [ -d "$dir/" ] && \
+	   ! run-parts --exit-on-error \
+		       --arg "$status" --arg "$position" --arg "$name" "$dir"; then
+		echo "Warning: $dir: Halted!" >&2
+	fi
+}
+
+# Extract connector name from devpath
+name="${DEVPATH##*/}"
+name="${name#card*-}"
+
+# Sanitized it to XRandR connector name
+# For instance: HDMI-A-1 -> HDMI1; DP-1 -> DP1...
+xname="$(echo "$name" | sed -e 's,-[A-Z],,' -e 's,-,,')"
+
+NAME="$name"
+XNAME="$xname"
+export NAME XNAME
+
+# Monitor is disconnected
+if xrandr | grep -q "$xname disconnected"; then
+	# Switch it off
+	xrandr --output "$reference"  --auto --primary
+	xrandr --output "$xname" --off
+
+	# Callback extra scripts
+	run_parts
+
+	exit 0
+fi
 
 # Tiny bash ini-parser
 ini_parser() {
@@ -160,29 +198,13 @@ for monitor in "$@"; do
 	break
 done
 
-NAME="$name"
-XNAME="$xname"
-export NAME XNAME
-
 # Skip if it is the reference output
 if [ "$xname" = "$reference" ]; then
 	exit 0
 fi
 
-# Setup monitors using XRandR
-# See: https://wiki.archlinux.org/index.php/xrandr
-if xrandr | grep -q "$xname disconnected"; then
-	xrandr --output "$reference"  --auto --primary
-	xrandr --output "$xname" --off
-else
-	xrandr --output "$xname" --auto "--$position-of" "$reference"
-fi
+# Switch monitor on
+xrandr --output "$xname" --auto "--$position-of" "$reference"
 
 # Callback extra scripts
-status="$(cat "/sys$DEVPATH/status")"
-dir="$PREFIX/libexec/${0##*/}.d"
-if [ -d "$dir/" ] && \
-   ! run-parts --exit-on-error \
-               --arg "$status" --arg "$position" --arg "$name" "$dir"; then
-	echo "Warning: $dir: Halted!" >&2
-fi
+run_parts

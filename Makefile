@@ -177,7 +177,6 @@ test:
 	devpath="$$(udevadm info -q path -n /dev/dri/card0)"; \
 	udevadm test --action=change "$$devpath"
 
-.PHONY: uevent-add uevent-remove uevent-change
 uevent-add uevent-remove uevent-change:
 uevent-%:
 	@devpath="$$(udevadm info -q path -n /dev/dri/card0)"; \

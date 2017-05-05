@@ -7,7 +7,6 @@
 CFLAGS	+= -std=c99 -Werror -Wall -Wextra
 
 PREFIX	?= /usr/local
-DPDEV	?= HDMI1
 
 .PHONY: all
 all: edidcat doc
@@ -182,12 +181,25 @@ uevent-%:
 	@devpath="$$(udevadm info -q path -n /dev/dri/card0)"; \
 	echo "$*" >"/sys/$$devpath/uevent"
 
-.PHONY: tests
-tests:
-	@echo "Switch off $(DPDEV) and wait 3 seconds..."
-	xrandr --output "$(DPDEV)" --off && sleep 3
-	@echo "Simulate connection of $(DPDEV)..."
-	sudo $(MAKE) -f Makefile uevent-change
+show-connectors:
+	@for dir in /sys/class/drm/card0/card0-*; do \
+		echo "$${dir##*/card0-}"; \
+	done
+
+define do_run =
+run-$(1):
+endef
+
+connectors := $(shell ls -1d /sys/class/drm/card0/card0-* | sed -e 's,^/sys/class/drm/card0/card0-,,')
+$(foreach connector,$(connectors),$(eval $(call do_run,$(connector))))
+
+run-%:
+	rm /tmp/hotplug-drm/$*/ -rf
+	@echo "Switch off $* and wait 3 seconds..."
+	xrandr --output "$$(echo "$*" | sed -e 's,-[A-Z],,' -e 's,-,,')" --off && sleep 3
+	@echo "Simulate connection of $*..."
+	devpath="/sys/class/drm/card0/card0-$*"; \
+	echo "change" >"$$devpath/uevent"
 
 .PHONY: clean
 clean:

@@ -179,7 +179,7 @@ else
 fi
 
 # Callback extra scripts
-status="$(cat /sys$DEVPATH/status)"
+status="$(cat "/sys$DEVPATH/status")"
 dir="$PREFIX/libexec/${0##*/}.d"
 if [ -d "$dir/" ] && \
    ! run-parts --exit-on-error \

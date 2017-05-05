@@ -15,7 +15,7 @@ if [ -z "$DEVPATH" ]; then
 	fi
 
 	# Trigger uevent on card0
-	exec ${su_root:-su root} -c 'echo change >/sys/class/drm/card0/uevent'
+	exec ${su_root:-su root} -c "echo \"${@:-change}\" >/sys/class/drm/card0/uevent"
 fi
 
 # Called by hotplug
@@ -33,17 +33,22 @@ for dev in "/sys$DEVPATH/$card-"*; do
 	action="change"
 	status="$(cat "$dev/status")"
 
+	# This case never happens is a usual situation. It is triggered when the
+	# script is called directly with remove as argument
+	if [ "$ACTION" = "remove" ]; then
+		action="remove"
+		rm -rf "$tmpdir/$name"
 	# New connector, set action to add
-	if [ ! -d "$tmpdir/$name" ]; then
+	elif [ ! -d "$tmpdir/$name" ]; then
 		action="add"
 		mkdir -p "$tmpdir/$name"
+		cp "$dev/status" "$tmpdir/$name"
 	# Status unchanged, keep going
 	elif [ "$(cat "$tmpdir/$name/status")" = "$status" ]; then
 		continue
 	fi
 
 	# Save status
-	cp "$dev/status" "$tmpdir/$name"
 
 	# Trigger uevent
 	echo "$action" >"$dev/uevent"

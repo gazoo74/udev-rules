@@ -20,7 +20,7 @@ if [ -z "$DEVPATH" ]; then
 	fi
 
 	# Trigger uevent on card0
-	exec ${su_root:-su root} -c 'echo change >/sys/class/drm/card0/uevent'
+	exec ${su_root:-su root} -c "echo \"${@:-change}\" >/sys/class/drm/card0/uevent"
 fi
 
 # Called by hotplug

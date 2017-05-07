@@ -11,6 +11,7 @@ PREFIX	?= /usr/local
 .PHONY: all
 all: edidcat doc
 
+.PHONY: doc
 doc: edidcat.1.gz hotplug-drm.7.gz hotplug-monitor.7.gz \
      hotplug-monitor.conf.5.gz
 

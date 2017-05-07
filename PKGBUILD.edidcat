@@ -20,6 +20,7 @@ build() {
 
 	cat <<EOF >config.h
 #define VERSION "$pkgver"
+#define HAVE_HEXDUMP_H 1
 EOF
 	make edidcat
 	make doc

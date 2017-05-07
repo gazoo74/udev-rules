@@ -46,8 +46,6 @@ const char VERSION[] = __DATE__ " " __TIME__;
 # define htonll(x)	(x)
 #endif
 
-#include "hexdump.h"
-
 #define __strncmp(s1, s2) strncmp(s1, s2, sizeof(s2))
 
 struct options_t {
@@ -62,8 +60,15 @@ static struct options_t options;
 #define EXPORT	((options.export) ? options.export : "")
 #define DEBUG	(options.debug)
 
+#ifdef HAVE_HEXDUMP_H
+#include "hexdump.h"
+
 #define debug(fmt, ...)		if (DEBUG) fprintf(stderr, fmt, ##__VA_ARGS__)
 #define hexdebug(a, b, s)	if (DEBUG) fhexdump(stderr, a, b, s)
+#else
+#define hexdump(...)
+#define hexdebug(...)
+#endif
 
 /*
  * According to wikipedia

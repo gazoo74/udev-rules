@@ -63,6 +63,21 @@ install-doc:
 	install -m 644 hotplug-drm.7.gz hotplug-monitor.7.gz \
 	           $(DESTDIR)$(PREFIX)/share/man/man7/
 
+.PHONY: uninstall
+uninstall:
+	for rule in 52-drm.rules 53-drm-connector.rules; do \
+		rm -f $(DESTDIR)/etc/udev/rules.d/$$rule; \
+	done
+	for bin in edidcat hotplug-drm hotplug-monitor; do \
+		rm -f $(DESTDIR)$(PREFIX)/bin/$$bin; \
+	done
+	rm -f $(DESTDIR)$(PREFIX)/share/hotplug-monitor/hotplug-monitor.conf.sample
+	rm -f $(DESTDIR)$(PREFIX)/share/man/man1/edidcat.1.gz
+	rm -f $(DESTDIR)$(PREFIX)/share/man/man5/hotplug-monitor.conf.5.gz
+	for man in hotplug-drm.7.gz hotplug-monitor.7.gz; do \
+		rm -f $(DESTDIR)$(PREFIX)/share/man/man7/$$man; \
+	done
+
 .PHONY: conf
 conf:
 	@for dir in /sys/class/drm/card0/card0-*; do \

@@ -9,7 +9,7 @@ CFLAGS	+= -std=c99 -Werror -Wall -Wextra
 PREFIX	?= /usr/local
 
 .PHONY: all
-all: edidcat doc
+all: edidcat
 
 .PHONY: doc
 doc: edidcat.1.gz hotplug-drm.7.gz hotplug-monitor.7.gz \
@@ -41,15 +41,6 @@ install:
 	sed -e 's,/usr,$(PREFIX),' \
 	    -i $(DESTDIR)$(PREFIX)/bin/hotplug-monitor
 	install -m 0755 -d $(DESTDIR)$(PREFIX)/libexec/hotplug-monitor.d/
-	install -d $(DESTDIR)$(PREFIX)/share/man/man1/
-	install -m 644 edidcat.1.gz \
-	           $(DESTDIR)$(PREFIX)/share/man/man1/
-	install -d $(DESTDIR)$(PREFIX)/share/man/man5/
-	install -m 644 hotplug-monitor.conf.5.gz \
-	           $(DESTDIR)$(PREFIX)/share/man/man5/
-	install -d $(DESTDIR)$(PREFIX)/share/man/man7/
-	install -m 644 hotplug-drm.7.gz hotplug-monitor.7.gz \
-	           $(DESTDIR)$(PREFIX)/share/man/man7/
 	if [ -e "hotplug-monitor.conf.sample" ]; then \
 		install -m 0755 -d $(DESTDIR)$(PREFIX)/share/hotplug-monitor/; \
 		install -m 0644 hotplug-monitor.conf.sample \
@@ -59,6 +50,18 @@ install:
 		install -m 0755 -d $(DESTDIR)$(PREFIX)/etc/; \
 		install -m 0644 hotplug-monitor.conf $(DESTDIR)$(PREFIX)/etc/; \
 	fi
+
+.PHONY: install-doc
+install-doc:
+	install -d $(DESTDIR)$(PREFIX)/share/man/man1/
+	install -m 644 edidcat.1.gz \
+	           $(DESTDIR)$(PREFIX)/share/man/man1/
+	install -d $(DESTDIR)$(PREFIX)/share/man/man5/
+	install -m 644 hotplug-monitor.conf.5.gz \
+	           $(DESTDIR)$(PREFIX)/share/man/man5/
+	install -d $(DESTDIR)$(PREFIX)/share/man/man7/
+	install -m 644 hotplug-drm.7.gz hotplug-monitor.7.gz \
+	           $(DESTDIR)$(PREFIX)/share/man/man7/
 
 .PHONY: conf
 conf:

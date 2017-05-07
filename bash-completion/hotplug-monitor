@@ -1,0 +1,14 @@
+#
+# Copyright 2017 Gaël PORTAY <gael.portay@savoirfairelinux.com>
+#
+# Licensed under the MIT license.
+#
+
+_hotplug_monitor()
+{
+	local cur prev words cword
+	_init_completion -s || return
+
+	COMPREPLY=( $( compgen -W "add change remove" -- "$cur" ) )
+} &&
+complete -F _hotplug_monitor hotplug-monitor

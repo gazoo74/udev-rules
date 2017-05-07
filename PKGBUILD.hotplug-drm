@@ -29,4 +29,7 @@ package() {
 	install -m 755 hotplug-drm "$pkgdir/usr/bin/"
 	install -d "$pkgdir/usr/share/man/man7/"
 	install -m 644 hotplug-drm.7.gz "$pkgdir/usr/share/man/man7/"
+	install -d "$pkgdir/usr/share/bash-completion/completions/"
+	install -m 644 bash-completion/hotplug-drm \
+	        "$pkgdir/usr/share/bash-completion/completions"
 }

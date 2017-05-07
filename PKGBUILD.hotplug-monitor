@@ -31,4 +31,7 @@ package() {
 	install -m 644 hotplug-monitor.conf.5.gz "$pkgdir/usr/share/man/man5/"
 	install -d "$pkgdir/usr/share/man/man7/"
 	install -m 644 hotplug-monitor.7.gz "$pkgdir/usr/share/man/man7/"
+	install -d "$pkgdir/usr/share/bash-completion/completions/"
+	install -m 644 bash-completion/hotplug-monitor \
+	        "$pkgdir/usr/share/bash-completion/completions"
 }

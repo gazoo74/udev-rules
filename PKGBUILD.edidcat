@@ -32,4 +32,7 @@ package() {
 	install -m 755 edidcat "$pkgdir/usr/bin/"
 	install -d "$pkgdir/usr/share/man/man1/"
 	install -m 644 edidcat.1.gz "$pkgdir/usr/share/man/man1/"
+	install -d "$pkgdir/usr/share/bash-completion/completions/"
+	install -m 644 bash-completion/edidcat \
+	        "$pkgdir/usr/share/bash-completion/completions"
 }

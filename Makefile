@@ -63,6 +63,17 @@ install-doc:
 	install -m 644 hotplug-drm.7.gz hotplug-monitor.7.gz \
 	           $(DESTDIR)$(PREFIX)/share/man/man7/
 
+.PHONY: install-bash-completion
+install-bash-completion:
+	completionsdir=$$(pkg-config --variable=completionsdir bash-completion); \
+	if [ -n "$$completionsdir" ]; then \
+		install -d $(DESTDIR)$$completionsdir/; \
+		for bash in edidcat hotplug-drm hotplug-monitor; do \
+			install -m 644 bash-completion/$$bash \
+			        $(DESTDIR)$$completionsdir/; \
+		done; \
+	fi
+
 .PHONY: uninstall
 uninstall:
 	for rule in 52-drm.rules 53-drm-connector.rules; do \
@@ -76,6 +87,10 @@ uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/share/man/man5/hotplug-monitor.conf.5.gz
 	for man in hotplug-drm.7.gz hotplug-monitor.7.gz; do \
 		rm -f $(DESTDIR)$(PREFIX)/share/man/man7/$$man; \
+	done
+	completionsdir=$$(pkg-config --variable=completionsdir bash-completion); \
+	for bash in edidcat hotplug-drm hotplug-monitor; do \
+		rm -f $(DESTDIR)$$completionsdir/$$bash; \
 	done
 
 .PHONY: conf

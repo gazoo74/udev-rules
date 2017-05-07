@@ -224,6 +224,32 @@ run-%:
 clean:
 	rm -f edidcat edidcat.1.gz hotplug-drm.7.gz hotplug-monitor.7.gz \
 	      hotplug-monitor.conf.5.gz
+	rm -f PKGBUILD*.aur master.tar.gz src/master.tar.gz *.pkg.tar.xz \
+	   -R src/udev-rules-master/ pkg/udev-rules/
+
+.PHONY: aur
+aur: PKGBUILD.edidcat.aur PKGBUILD.hotplug-drm.aur \
+     PKGBUILD.hotplug-monitor.aur PKGBUILD.udev-rules.aur
+	for pkgbuild in $^; do \
+		makepkg --force --nodeps -p $$pkgbuild; \
+	done
+
+PKGBUILD%.aur: PKGBUILD%
+	cp $< $@.tmp
+	makepkg --nobuild --nodeps --skipinteg -p $@.tmp
+	md5sum="$$(makepkg --geninteg -p $@.tmp)"; \
+	sed -e "/pkgver()/,/^$$/d" \
+	    -e "/source=/a$$md5sum" \
+	    -i $@.tmp
+	mv $@.tmp $@
+
+define do_install_aur =
+install-aur-$(1):
+	pacman -U $(1).pkg.tar.xz
+endef
+
+aurs := $(shell ls -1d *.pkg.tar.xz 2>/dev/null | sed -e 's,.pkg.tar.xz$$,,')
+$(foreach aur,$(aurs),$(eval $(call do_install_aur,$(aur))))
 
 %.1: %.1.adoc
 	asciidoctor -b manpage -o $@ $<

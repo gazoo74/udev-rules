@@ -1,0 +1,32 @@
+# Maintainer: Gaël PORTAY <gael.portay@savoirfairelinux.com>
+
+pkgname=hotplug-drm
+pkgver=master
+pkgrel=1
+pkgdesc='udev rules'
+url='https://github.com/gazoo74/udev-rules'
+license=('MIT')
+source=("https://github.com/gazoo74/udev-rules/archive/master.tar.gz")
+arch=('any')
+depends=('systemd')
+builddepends=('asciidoctor')
+
+pkgver() {
+	cd "$srcdir/udev-rules-master"
+	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+	cd "$srcdir/udev-rules-master"
+
+	make doc
+}
+
+package() {
+	cd "$srcdir/udev-rules-master"
+
+	install -d "$pkgdir/usr/bin/"
+	install -m 755 hotplug-drm "$pkgdir/usr/bin/"
+	install -d "$pkgdir/usr/share/man/man7/"
+	install -m 644 hotplug-drm.7.gz "$pkgdir/usr/share/man/man7/"
+}

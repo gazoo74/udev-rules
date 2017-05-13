@@ -9,6 +9,10 @@ _hotplug_drm()
 	local cur prev words cword
 	_init_completion -s || return
 
+	if [[ "$cword" -ge 2 ]]; then
+		return
+	fi
+
 	COMPREPLY=( $( compgen -W "add change remove" -- "$cur" ) )
 } &&
 complete -F _hotplug_drm hotplug-drm

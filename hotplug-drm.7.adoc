@@ -12,7 +12,7 @@ hotplug-drm - splits drm uevent into card's connectors uevents
 
 == SYNOPSIS
 
-*hotplug-drm*
+*hotplug-drm* [UEVENT=change]
 
 == DESCRIPTION
 

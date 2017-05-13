@@ -12,7 +12,7 @@ hotplug-monitor - setups monitor upon card's connector uevent
 
 == SYNOPSIS
 
-*hotplug-monitor*
+*hotplug-monitor* [UEVENT=change] [CARD=card-0] [CONNECTOR]
 
 == DESCRIPTION
 

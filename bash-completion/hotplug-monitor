@@ -9,6 +9,24 @@ _hotplug_monitor()
 	local cur prev words cword
 	_init_completion -s || return
 
+	if [[ "$cword" -ge 4 ]]; then
+		return
+	fi
+
+	if [[ "$cword" -ge 3 ]]; then
+		local connectors
+		connectors=$(cd /sys/class/drm/$prev/ && ls -1d card[0-9]-*)
+		COMPREPLY=( $( compgen -W "$connectors" -- "$cur" ) )
+		return
+	fi
+
+	if [[ "$cword" -ge 2 ]]; then
+		local cards
+		cards=$(cd /sys/class/drm/ && ls -1d card[0-9])
+		COMPREPLY=( $( compgen -W "$cards" -- "$cur" ) )
+		return
+	fi
+
 	COMPREPLY=( $( compgen -W "add change remove" -- "$cur" ) )
 } &&
 complete -F _hotplug_monitor hotplug-monitor

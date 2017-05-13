@@ -51,18 +51,6 @@ NAME="$name"
 XNAME="$xname"
 export NAME XNAME
 
-# Monitor is disconnected
-if xrandr | grep -q "$xname disconnected"; then
-	# Switch it off
-	xrandr --output "$reference"  --auto --primary
-	xrandr --output "$xname" --off
-
-	# Callback extra scripts
-	run_parts
-
-	exit 0
-fi
-
 # Tiny bash ini-parser
 ini_parser() {
 	local ifs="$IFS"
@@ -89,6 +77,33 @@ ini_parser() {
 	IFS=$ifs
 }
 
+# Load global configuration if any
+reference="LVDS1"
+position="left"
+for conf in $PWD/${0##*/}.conf $PREFIX/etc/${0##*/}.conf /etc/${0##*/}.conf; do
+	if [ -e "$conf" ]; then
+		ini_parser "$conf"
+		break
+	fi
+done
+
+# Skip if it is the reference output
+if [ "$xname" = "$reference" ]; then
+	exit 0
+fi
+
+# Monitor is disconnected
+if xrandr | grep -q "$xname disconnected"; then
+	# Switch it off
+	xrandr --output "$reference"  --auto --primary
+	xrandr --output "$xname" --off
+
+	# Callback extra scripts
+	run_parts
+
+	exit 0
+fi
+
 # export dmi
 dmi() {
 	for file in product_name product_serial product_uuid product_version \
@@ -100,16 +115,6 @@ dmi() {
 		eval export "$var"="$val"
 	done
 }
-
-# Load global configuration if any
-reference="LVDS1"
-position="left"
-for conf in $PWD/${0##*/}.conf $PREFIX/etc/${0##*/}.conf /etc/${0##*/}.conf; do
-	if [ -e "$conf" ]; then
-		ini_parser "$conf"
-		break
-	fi
-done
 
 # Load machine preferences if any
 # __PRODUCT_UUID="EFB03401-5298-11CB-816D-AD9D95ED2A67"
@@ -197,11 +202,6 @@ for monitor in "$@"; do
 
 	break
 done
-
-# Skip if it is the reference output
-if [ "$xname" = "$reference" ]; then
-	exit 0
-fi
 
 # Switch monitor on
 xrandr --output "$xname" --auto "--$position-of" "$reference"

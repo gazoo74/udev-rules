@@ -115,7 +115,7 @@ conf:
 	echo "# Automatically generated file; EDIT TO YOUR CONVENIENCE."; \
 	echo "# hotplug-monitor $$(git describe --always) Configuration"; \
 	echo "#"; \
-	echo "# Note this ini file use \`#' for comments instead of \`;'"; \
+	echo "# Note this ini file uses \`#' for comments instead of \`;'"; \
 	echo "#"; \
 	echo ""; \
 	echo "# Sections override either machine or monitors preferences."; \

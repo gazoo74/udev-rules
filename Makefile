@@ -95,7 +95,8 @@ uninstall:
 
 .PHONY: conf
 conf:
-	@for dir in /sys/class/drm/card0/card0-*; do \
+	@set -e; \
+	for dir in /sys/class/drm/card0/card0-*; do \
 		if [ "$$(cat $$dir/status)" = "connected" ]; then \
 			reference="$${dir##*/card0-}"; \
 			break; \

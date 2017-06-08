@@ -155,6 +155,27 @@ data is separated by an underscore.
 	reference=LVDS1
 	position=right
 
+=== XRANDR
+
+*xrandr(1)* has a different naming for connectors.
+
+*hotplug-monitor(1) has a basic algorithm to convert a connector name from
+*DRM* convention to *XRandR*. In some cases, the conversion is incorrect and the
+connector name has to be explicitly sets in the section *XRANDR*.
+
+	[XRANDR]
+	DP_1=DP1
+	DP_2=DP2
+	DP_3=DP2-1
+	DP_4=DP2-2
+	DP_5=DP2-3
+	eDP_1=eDP1
+	HDMI_A_1=HDMI1
+	HDMI_A_2_HDMI2
+
+Note: **DRM** connector's name have to replace every dashes (*-*) by underscores
+(*_*).
+
 == BUGS
 
 Report bugs at *https://github.com/gazoo74/udev-rules/issues*

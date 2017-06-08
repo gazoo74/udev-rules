@@ -80,7 +80,8 @@ ini_parser() {
 # Load global configuration if any
 reference="LVDS1"
 position="left"
-for conf in $PWD/${0##*/}.conf $PREFIX/etc/${0##*/}.conf /etc/${0##*/}.conf; do
+for dir in "$PWD" "$PREFIX/etc" "/etc"; do
+	conf="$dir/${0##*/}.conf"
 	if [ -e "$conf" ]; then
 		ini_parser "$conf"
 		break

@@ -39,17 +39,31 @@ run_parts() {
 	fi
 }
 
+# Convertion from DRM to XRandR connector name
+drm_to_xrandr() {
+	local name xname
+	name="$1"
+
+	# Get explicit DRM to XRandR connector name from XRANDR section
+	if declare -f "ini_XRANDR" >/dev/null; then
+		ini_XRANDR
+		var="${name//-/_}"
+		val="$(eval echo "\$$var")"
+		xname="$val"
+	fi
+
+	# Sanitized it to XRandR connector name
+	# For instance: HDMI-A-1 -> HDMI1; DP-1 -> DP1...
+	if [ -z "$xname" ]; then
+		xname="$(echo "$name" | sed -e 's,-[A-Z],,' -e 's,-,,')"
+	fi
+
+	echo "$xname"
+}
+
 # Extract connector name from devpath
 name="${DEVPATH##*/}"
 name="${name#card*-}"
-
-# Sanitized it to XRandR connector name
-# For instance: HDMI-A-1 -> HDMI1; DP-1 -> DP1...
-xname="$(echo "$name" | sed -e 's,-[A-Z],,' -e 's,-,,')"
-
-NAME="$name"
-XNAME="$xname"
-export NAME XNAME
 
 # Tiny bash ini-parser
 ini_parser() {
@@ -87,6 +101,12 @@ for dir in "$PWD" "$PREFIX/etc" "/etc"; do
 		break
 	fi
 done
+
+# Get XRandR connector name
+xname="$(drm_to_xrandr "$name")"
+NAME="$name"
+XNAME="$xname"
+export NAME XNAME
 
 # Skip if it is the reference output
 if [ "$xname" = "$reference" ]; then
@@ -139,14 +159,6 @@ done
 if [ -e "/sys$DEVPATH/edid" ]; then
 	eval "$(edidcat --prefix _ --export "/sys$DEVPATH/edid")"
 fi
-
-# Extract connector name from devpath
-name="${DEVPATH##*/}"
-name="${name#card*-}"
-
-# Sanitized it to XRandR connector name
-# For instance: HDMI-A-1 -> HDMI1; DP-1 -> DP1...
-xname="$(echo "$name" | sed -e 's,-[A-Z],,' -e 's,-,,')"
 
 # Load connector preferences if any
 #

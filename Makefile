@@ -188,6 +188,14 @@ conf:
 		echo "position=right"; \
 		echo ""; \
 	done; \
+	echo "# Set explicit DRM to XRandR connector name"; \
+	echo "# For instance: HDMI-A-1 -> HDMI1; DP-1 -> DP1..."; \
+	echo "[XRANDR]"; \
+	for dir in /sys/class/drm/card0/card0-*; do \
+		name="$${dir##*/card0-}"; \
+		xname="$$(echo "$$name" | sed -e 's,-[A-Z],,' -e 's,-,,')"; \
+		echo "$$(echo "$$name" | sed -e 's,-,_,g')=$$xname"; \
+	done; \
 	echo "" >$@
 
 .PHONY: hotplug-monitor.conf.sample

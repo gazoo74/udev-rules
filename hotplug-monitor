@@ -116,7 +116,7 @@ fi
 # Monitor is disconnected
 if xrandr | grep -q "$xname disconnected"; then
 	# Switch it off
-	xrandr --output "$reference"  --auto --primary
+	xrandr --output "$reference" --auto --primary
 	xrandr --output "$xname" --off
 
 	# Callback extra scripts
@@ -195,7 +195,6 @@ for monitor in "$@"; do
 		elif [ -n "$connector" ]; then
 			section+=" $connector"
 		fi
-
 
 		# Sanitize spaces
 		func="ini_${section// /_}"

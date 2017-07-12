@@ -196,8 +196,7 @@ conf:
 		name="$${dir##*/card0-}"; \
 		xname="$$(echo "$$name" | sed -e 's,-[A-Z],,' -e 's,-,,')"; \
 		echo "$$(echo "$$name" | sed -e 's,-,_,g')=$$xname"; \
-	done; \
-	echo "" >$@
+	done
 
 .PHONY: hotplug-monitor.conf.sample
 hotplug-monitor.conf.sample:

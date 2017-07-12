@@ -35,6 +35,7 @@ for dev in "/sys$DEVPATH/$card-"*; do
 
 	# This case never happens is a usual situation. It is triggered when the
 	# script is called directly with remove as argument
+	# shellcheck disable=SC2153 disable=SC2115
 	if [ "$ACTION" = "remove" ]; then
 		action="remove"
 		rm -rf "$tmpdir/$name"

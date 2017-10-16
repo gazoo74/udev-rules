@@ -8,7 +8,7 @@ url='https://github.com/gazoo74/udev-rules'
 license=('MIT')
 source=("https://github.com/gazoo74/udev-rules/archive/master.tar.gz")
 arch=('any')
-depends=('systemd' 'edidcat')
+depends=('systemd' 'xorg-xrandr' 'edidcat')
 builddepends=('asciidoctor')
 
 pkgver() {

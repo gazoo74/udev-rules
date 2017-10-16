@@ -19,7 +19,6 @@ pkgver() {
 package() {
 	cd "$srcdir/udev-rules-master"
 
-	install -d "$pkgdir/usr/bin/"
 	install -m 0755 -d "$pkgdir/etc/udev/rules.d/"
 	install -m 0644 52-drm.rules "$pkgdir/etc/udev/rules.d/"
 	install -m 0644 53-drm-connector.rules "$pkgdir/etc/udev/rules.d/"

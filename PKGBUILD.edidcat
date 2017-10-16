@@ -8,7 +8,7 @@ url='https://github.com/gazoo74/udev-rules'
 license=('MIT')
 source=("https://github.com/gazoo74/udev-rules/archive/master.tar.gz")
 arch=('any')
-builddepends=('asciidoctor')
+makedepends=('asciidoctor')
 
 pkgver() {
 	cd "$srcdir/udev-rules-master"

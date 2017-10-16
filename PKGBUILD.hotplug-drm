@@ -9,7 +9,7 @@ license=('MIT')
 source=("https://github.com/gazoo74/udev-rules/archive/master.tar.gz")
 arch=('any')
 depends=('systemd')
-builddepends=('asciidoctor')
+makedepends=('asciidoctor')
 
 pkgver() {
 	cd "$srcdir/udev-rules-master"

@@ -22,9 +22,9 @@ fi
 # Be safe, drop privileges
 su - nobody -s "${SHELL:-/bin/sh}"
 
-# Create a temporary directory to record status of each connectors
-tmpdir="/tmp/${0##*/}"
-mkdir -p "$tmpdir"
+# Create a run directory to record status of each connectors
+rundir="/var/run/${0##*/}"
+mkdir -p "$rundir"
 
 # Check status of all connectors
 card="${DEVPATH##*/}"
@@ -37,21 +37,21 @@ for dev in "/sys$DEVPATH/$card-"*; do
 	# script is called directly with remove as argument
 	# shellcheck disable=SC2153 disable=SC2115
 	if [ "$ACTION" = "remove" ]; then
-		rm -rf "$tmpdir/$name"
+		rm -rf "$rundir/$name"
 		echo "remove" >"$dev/uevent"
 		continue
 	# New connector, set action to add
-	elif [ ! -d "$tmpdir/$name" ]; then
+	elif [ ! -d "$rundir/$name" ]; then
 		action="add"
-		mkdir -p "$tmpdir/$name"
-		cp "$dev/status" "$tmpdir/$name"
+		mkdir -p "$rundir/$name"
+		cp "$dev/status" "$rundir/$name"
 	# Status unchanged, keep going
-	elif [ "$(cat "$tmpdir/$name/status")" = "$status" ]; then
+	elif [ "$(cat "$rundir/$name/status")" = "$status" ]; then
 		continue
 	fi
 
 	# Save status
-	cp "$dev/status" "$tmpdir/$name"
+	cp "$dev/status" "$rundir/$name"
 
 	# Trigger uevent
 	echo "$action" >"$dev/uevent"

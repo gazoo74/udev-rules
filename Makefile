@@ -255,7 +255,7 @@ clean:
 aur: PKGBUILD.edidcat.aur PKGBUILD.hotplug-drm.aur \
      PKGBUILD.hotplug-monitor.aur PKGBUILD.udev-rules.aur
 	for pkgbuild in $^; do \
-		makepkg --force --nodeps -p $$pkgbuild; \
+		makepkg --force --syncdeps -p $$pkgbuild; \
 	done
 
 PKGBUILD%.aur: PKGBUILD%

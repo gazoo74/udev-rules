@@ -25,6 +25,11 @@ build() {
 package() {
 	cd "$srcdir/udev-rules-master"
 
+	install -m 0755 -d "$pkgdir/etc/udev/rules.d/"
+	install -m 0644 53-drm-connector.rules "$pkgdir/etc/udev/rules.d/"
+	sed -e '/SUBSYSTEM=="drm"/s#$#, ENV{DISPLAY}=":0"#' \
+	    -e '/SUBSYSTEM=="drm"/s#$#, ENV{XAUTHORITY}="/run/user/1000/gdm/Xauthority"#' \
+	    -i "$pkgdir/etc/udev/rules.d/53-drm-connector.rules"
 	install -d "$pkgdir/usr/bin/"
 	install -m 755 hotplug-monitor "$pkgdir/usr/bin/"
 	install -d "$pkgdir/usr/share/man/man5/"

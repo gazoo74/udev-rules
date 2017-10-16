@@ -25,6 +25,8 @@ build() {
 package() {
 	cd "$srcdir/udev-rules-master"
 
+	install -m 0755 -d "$pkgdir/etc/udev/rules.d/"
+	install -m 0644 52-drm.rules "$pkgdir/etc/udev/rules.d/"
 	install -d "$pkgdir/usr/bin/"
 	install -m 755 hotplug-drm "$pkgdir/usr/bin/"
 	install -d "$pkgdir/usr/share/man/man7/"
